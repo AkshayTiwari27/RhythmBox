@@ -97,8 +97,11 @@ MusicPlayerApplication/
 The `main.cpp` file provides a clear demonstration of the application's functionality.
 
 ```cpp
+
 #include "MusicPlayerApplication.hpp"
 #include <iostream>
+
+using namespace std;
 
 void runApplication() {
     auto application = MusicPlayerApplication::getInstance();
@@ -112,39 +115,40 @@ void runApplication() {
     application->addSongToPlaylist("Bollywood Vibes", "Kesariya");
 
     // 3. Connect a device and play a single song
-    std::cout << "\n-- Playing a single song --\n";
+    cout << "\n-- Playing a single song --\n";
     application->connectAudioDevice(DeviceType::HEADPHONES);
     application->playSingleSong("Zinda");
 
     // 4. Select a strategy and play a playlist
-    std::cout << "\n-- Sequential Playback --\n";
+    cout << "\n-- Sequential Playback --\n";
     application->selectPlayStrategy(PlayStrategyType::SEQUENTIAL);
     application->loadPlaylist("Bollywood Vibes");
     application->playAllTracksInPlaylist();
 
     // 5. Remove a song and demonstrate the change
-    std::cout << "\n-- Deleting a song from a playlist --\n";
+    cout << "\n-- Deleting a song from a playlist --\n";
     application->removeSongFromPlaylist("Bollywood Vibes", "Kesariya");
     application->playAllTracksInPlaylist(); // Playlist is now empty
 
     // 6. Delete the playlist
-    std::cout << "\n-- Deleting a playlist --\n";
+    cout << "\n-- Deleting a playlist --\n";
     application->deletePlaylist("Bollywood Vibes");
 }
 
 int main() {
     try {
         runApplication();
-    } catch (const std::exception& error) {
-        std::cerr << "An unexpected error occurred: " << error.what() << std::endl;
+    } catch (const exception& error) {
+        cerr << "An unexpected error occurred: " << error.what() << endl;
     }
 
     // 7. Clean up all resources
     MusicPlayerApplication::getInstance()->cleanup();
-    std::cout << "\nApplication finished and all resources cleaned up." << std::endl;
+    cout << "\nApplication finished and all resources cleaned up." << endl;
 
     return 0;
 }
+
 ```
 
 ## Technologies Used
