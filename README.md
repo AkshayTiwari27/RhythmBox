@@ -34,7 +34,15 @@ This project leverages several key design patterns to ensure a modular, scalable
 
 ## **Project Structure**
 
+
 The project is organized into a modular structure to separate concerns and improve clarity.
+
+<p align="center">
+  <img src="UML.svg" alt="RhythmBox UML Diagram" width="850"/>
+  <br/>
+  <em>Diagram showing RhythmBox interaction in C++ </em>
+</p>
+
 
 ```
 MusicPlayerApplication/
