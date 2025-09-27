@@ -36,7 +36,7 @@ public:
         if (song == nullptr) {
             throw runtime_error("Cannot remove a null song.");
         }
-        auto it = std::remove(songList.begin(), songList.end(), song);
+        auto it = remove(songList.begin(), songList.end(), song);
         if (it != songList.end()) {
             songList.erase(it, songList.end());
             cout << "Song \"" << song->getTitle() << "\" removed from playlist \"" << playlistName << "\"." << endl;

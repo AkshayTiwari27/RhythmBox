@@ -4,8 +4,8 @@
 #include "PlayStrategy.hpp"
 #include <vector>
 #include <stack>   
-#include <ctime>   // Added missing header for time()
-#include <cstdlib> // Added missing header for srand() and rand()
+#include <ctime>
+#include <cstdlib>
 
 using namespace std;
 
@@ -62,6 +62,10 @@ public:
 
         Song* song = history.top();
         history.pop();
+        
+        // BUG FIX: This line adds the song back to the upcoming song list.
+        remainingSongs.push_back(song);
+
         return song;
     }
 };

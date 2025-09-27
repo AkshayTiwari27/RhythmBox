@@ -1,64 +1,173 @@
 #include "MusicPlayerApplication.hpp"
+#include "MusicPlayerFacade.hpp"
 #include <iostream>
+#include <string>
+#include <limits>
 
 using namespace std;
 
-// Encapsulate the application logic
-void runApplication() {
+void showMenu() {
+    cout << "\n===== RhythmBox Music Player =====\n";
+    cout << "1.  Create Song in Library\n";
+    cout << "2.  Create Playlist\n";
+    cout << "3.  Add Song to Playlist\n";
+    cout << "4.  Remove Song from Playlist\n";
+    cout << "5.  Delete Playlist\n";
+    cout << "6.  Connect Audio Device\n";
+    cout << "7.  Select Playback Strategy\n";
+    cout << "8.  Load and Play Entire Playlist\n";
+    cout << "9.  Play Single Song\n";
+    cout << "10. Play Next Track in Loaded Playlist\n";
+    cout << "11. Play Previous Track in Loaded Playlist\n";
+    cout << "0.  Exit\n";
+    cout << "==================================\n";
+    cout << "Enter your choice: ";
+}
+
+string getInput(const string& prompt) {
+    cout << prompt;
+    string input;
+    getline(cin, input);
+    return input;
+}
+
+void populateInitialLibrary(MusicPlayerApplication* app) {
+    app->createSongInLibrary("Kesariya", "Arijit Singh");
+    app->createSongInLibrary("Chaiyya Chaiyya", "Sukhwinder Singh");
+    app->createSongInLibrary("Tum Hi Ho", "Arijit Singh");
+    app->createSongInLibrary("Jai Ho", "A. R. Rahman");
+    app->createSongInLibrary("Zinda", "Siddharth Mahadevan");
+    cout << "Initial song library populated with 5 songs.\n";
+}
+
+void runInteractiveSession() {
     auto application = MusicPlayerApplication::getInstance();
+    populateInitialLibrary(application);
 
-    // Populate library
-    application->createSongInLibrary("Kesariya", "Arijit Singh", "/music/kesariya.mp3");
-    application->createSongInLibrary("Chaiyya Chaiyya", "Sukhwinder Singh", "/music/chaiyya_chaiyya.mp3");
-    application->createSongInLibrary("Tum Hi Ho", "Arijit Singh", "/music/tum_hi_ho.mp3");
-    application->createSongInLibrary("Jai Ho", "A. R. Rahman", "/music/jai_ho.mp3");
-    application->createSongInLibrary("Zinda", "Siddharth Mahadevan", "/music/zinda.mp3"); 
+    int choice = -1;
+    while (choice != 0) {
+        showMenu();
+        cin >> choice;
 
-    // Create playlist and add songs
-    application->createPlaylist("Bollywood Vibes");
-    application->addSongToPlaylist("Bollywood Vibes", "Kesariya");
-    application->addSongToPlaylist("Bollywood Vibes", "Chaiyya Chaiyya");
-    application->addSongToPlaylist("Bollywood Vibes", "Tum Hi Ho");
+        if (cin.fail()) {
+            cin.clear();
+            cin.ignore(numeric_limits<streamsize>::max(), '\n');
+            cout << "Invalid input. Please enter a number.\n";
+            continue;
+        }
 
-    cout << "\n-- Playing a single song --\n";
-    application->connectAudioDevice(DeviceType::HEADPHONES);
-    application->playSingleSong("Zinda");
+        cin.ignore(numeric_limits<streamsize>::max(), '\n');
 
-    cout << "\n-- Sequential Playback --\n";
-    application->selectPlayStrategy(PlayStrategyType::SEQUENTIAL);
-    application->loadPlaylist("Bollywood Vibes");
-    application->playAllTracksInPlaylist();
-
-    // --- DEMONSTRATE DELETE A SONG FROM PLAYLIST FUNCTIONALITY ---
-
-    cout << "\n-- Deleting a song from a playlist --\n";
-    application->removeSongFromPlaylist("Bollywood Vibes", "Chaiyya Chaiyya");
-
-    // Play again to show the song was removed
-    cout << "\n-- Playing 'Bollywood Vibes' after deleting a song --\n";
-    application->loadPlaylist("Bollywood Vibes"); // Reload playlist in strategy
-    application->playAllTracksInPlaylist();
-
-    cout << "\n-- Deleting a playlist --\n";
-    application->deletePlaylist("Bollywood Vibes");
-
-    // Attempt to load the deleted playlist (will cause an error)
-    try {
-        cout << "\n-- Attempting to load deleted playlist --\n";
-        application->loadPlaylist("Bollywood Vibes");
-    } catch (const exception& e) {
-        cerr << "Caught expected error: " << e.what() << endl;
+        try {
+            switch (choice) {
+                case 1: {
+                    string title = getInput("Enter song title: ");
+                    string artist = getInput("Enter artist name: ");
+                    application->createSongInLibrary(title, artist);
+                    cout << "Song \"" << title << "\" added to library.\n";
+                    break;
+                }
+                case 2: {
+                    string name = getInput("Enter new playlist name: ");
+                    application->createPlaylist(name);
+                    break;
+                }
+                case 3: {
+                    string playlistName = getInput("Enter playlist name: ");
+                    string songTitle = getInput("Enter song title to add: ");
+                    application->addSongToPlaylist(playlistName, songTitle);
+                    cout << "Song added to playlist successfully.\n";
+                    break;
+                }
+                case 4: {
+                    string playlistName = getInput("Enter playlist name: ");
+                    string songTitle = getInput("Enter song title to remove: ");
+                    application->removeSongFromPlaylist(playlistName, songTitle);
+                    break;
+                }
+                 case 5: {
+                    string playlistName = getInput("Enter playlist name to delete: ");
+                    application->deletePlaylist(playlistName);
+                    break;
+                }
+                case 6: {
+                    cout << "Select a device (1: Headphones, 2: Bluetooth, 3: Wired): ";
+                    int deviceChoice;
+                    cin >> deviceChoice;
+                    cin.ignore(numeric_limits<streamsize>::max(), '\n');
+                    
+                    DeviceType type;
+                    if (deviceChoice == 1) type = DeviceType::HEADPHONES;
+                    else if (deviceChoice == 2) type = DeviceType::BLUETOOTH;
+                    else if (deviceChoice == 3) type = DeviceType::WIRED;
+                    else {
+                        cout << "Invalid device choice.\n";
+                        break;
+                    }
+                    application->connectAudioDevice(type);
+                    break;
+                }
+                case 7: {
+                    cout << "Select a strategy (1: Sequential, 2: Random): ";
+                    int strategyChoice;
+                    cin >> strategyChoice;
+                    cin.ignore(numeric_limits<streamsize>::max(), '\n');
+                    
+                    PlayStrategyType type;
+                    if (strategyChoice == 1) type = PlayStrategyType::SEQUENTIAL;
+                    else if (strategyChoice == 2) type = PlayStrategyType::RANDOM;
+                    else {
+                        cout << "Invalid strategy choice.\n";
+                        break;
+                    }
+                    application->selectPlayStrategy(type);
+                    cout << "Playback strategy set.\n";
+                    break;
+                }
+                case 8: {
+                    string playlistName = getInput("Enter playlist name to play: ");
+                    application->loadPlaylist(playlistName);
+                    cout << "\n-- Playing all tracks in '" << playlistName << "' --\n";
+                    application->playAllTracksInPlaylist();
+                    break;
+                }
+                case 9: {
+                    string songTitle = getInput("Enter song title to play: ");
+                    cout << "\n-- Playing single song --\n";
+                    application->playSingleSong(songTitle);
+                    break;
+                }
+                case 10: {
+                     cout << "\n-- Playing next track --\n";
+                     MusicPlayerFacade::getInstance()->playNextTrack();
+                    break;
+                }
+                case 11: {
+                     cout << "\n-- Playing previous track --\n";
+                     application->playPreviousTrackInPlaylist();
+                    break;
+                }
+                case 0:
+                    cout << "Exiting RhythmBox...\n";
+                    break;
+                default:
+                    cout << "Invalid choice. Please try again.\n";
+                    break;
+            }
+        } catch (const exception& e) {
+            cerr << "Error: " << e.what() << endl;
+        }
     }
 }
 
+
 int main() {
     try {
-        runApplication();
+        runInteractiveSession();
     } catch (const exception& error) {
         cerr << "An unexpected error occurred: " << error.what() << endl;
     }
 
-    // Cleanup all resources before exiting
     MusicPlayerApplication::getInstance()->cleanup();
     cout << "\nApplication finished and all resources cleaned up." << endl;
 

@@ -62,13 +62,6 @@ public:
         audioEngine->play(device, song);
     }
 
-    void pauseSong(Song* song) {
-        if (audioEngine->getCurrentSongTitle() != song->getTitle()) {
-            throw runtime_error("Cannot pause \"" + song->getTitle() + "\"; not currently playing.");
-        }
-        audioEngine->pause();
-    }
-
     void playAllTracks() {
         if (!loadedPlaylist) {
             throw runtime_error("No playlist loaded.");
@@ -107,10 +100,6 @@ public:
         else {
             cout << "Completed playlist: " << loadedPlaylist->getPlaylistName() << "\n";
         }
-    }
-
-    void enqueueNext(Song* song) {
-        playStrategy->addToNext(song);
     }
 };
 

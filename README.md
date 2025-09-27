@@ -1,58 +1,63 @@
 
-# **RhythmBox: C++ Music Player System**
+# **RhythmBox: An Interactive C++ Music Player**
 
-RhythmBox is a console-based C++ application that simulates a music player. It is designed with a strong emphasis on clean architecture and the practical application of fundamental software design patterns. The system supports a song library, playlist management, multiple playback strategies, and dynamic audio output device selection.
+RhythmBox is a console-based C++ application that simulates a music player, now featuring a fully interactive, menu-driven interface. It's designed to be a practical showcase of fundamental software design patterns in a clean, modular architecture.
 
-## **Key Features**
+The system allows users to manage a song library, build custom playlists, and control playback through a simple and intuitive command-line interface.
 
-* **Song Library**: Create and maintain a central library of songs.
-* **Playlist Management**:
-    * Create and delete user-defined playlists.
-    * Add songs from the library to any playlist.
-    * Remove songs from a specific playlist.
-* **Multiple Playback Strategies**:
-    * **Sequential**: Plays tracks in the order they appear in the playlist.
-    * **Random**: Plays tracks from the playlist in a random, non-repeating order.
-    * **Custom Queue**: Allows users to queue a song to play next, otherwise plays sequentially.
-* **Dynamic Device Connection**:
-    * Supports various audio output types like Headphones, Wired Speakers, and Bluetooth speakers.
-    * Dynamically connect to a device type at runtime.
-* **Core Playback Controls**:
-    * Play a single song or an entire playlist.
-    * Pause and resume playback.
-    * Navigate with `next()` and `previous()` track functions.
+## **Key Features** 🎶
+
+The application is controlled by a straightforward interactive menu with the following features:
+
+#### **Music Library & Playlists**
+
+  * **Create Songs**: Add new songs to the central music library.
+  * **Manage Playlists**: Create, build, and delete multiple custom playlists.
+  * **Add & Remove**: Easily add songs from the library to your playlists or remove them as needed.
+
+#### **Playback Control**
+
+  * **Flexible Playback**: Play entire playlists or individual songs on demand.
+  * **Playback Strategies**: Instantly switch between **Sequential** (in-order) and **Random** (shuffled) playback modes.
+  * **Track Navigation**: Seamlessly navigate through a loaded playlist with **next** and **previous** track controls.
+
+#### **Device Simulation**
+
+  * **Dynamic Connection**: Simulate connecting to different audio output devices like Headphones, Bluetooth Speakers, and Wired Speakers at runtime.
+
+-----
 
 ## **Design Patterns Implemented**
 
-This project leverages several key design patterns to ensure a modular, scalable, and maintainable codebase.
+This project leverages several key design patterns to ensure a modular and maintainable codebase:
 
-* **Facade**: The `MusicPlayerFacade` class provides a simplified, high-level interface to the complex underlying subsystems like the audio engine and various managers. This decouples the client (`main.cpp`) from the internal workings of the application.
-* **Singleton**: The `MusicPlayerApplication`, `MusicPlayerFacade`, and all manager classes (`PlaylistManager`, `DeviceManager`, `StrategyManager`) are implemented as singletons. This ensures a single, globally accessible instance for each, managing a shared state consistently across the application.
-* **Strategy**: The `PlayStrategy` interface defines a common contract for all playback algorithms. Concrete classes like `SequentialPlayStrategy`, `RandomPlayStrategy`, and `CustomQueueStrategy` implement this interface, allowing the playback behavior to be changed dynamically at runtime.
-* **Adapter**: The `BluetoothSpeakerAdapter`, `WiredSpeakerAdapter`, and `HeadphonesAdapter` classes act as adapters. They wrap the incompatible external device APIs (`BluetoothSpeakerAPI`, etc.) to conform to the standard `IAudioOutputDevice` interface required by the system.
-* **Factory Method**: The `DeviceFactory` class provides a static `createDevice` method that manufactures and returns instances of `IAudioOutputDevice` based on the specified `DeviceType`. This abstracts the instantiation logic from the client.
+  * **Facade**: The `MusicPlayerFacade` class provides a simplified, high-level interface to the complex underlying subsystems.
+  * **Singleton**: All manager classes, the facade, and the main application class are implemented as singletons to ensure a single, globally accessible instance.
+  * **Strategy**: The `PlayStrategy` interface allows the playback behavior (`SequentialPlayStrategy`, `RandomPlayStrategy`) to be changed dynamically at runtime.
+  * **Adapter**: The adapter classes wrap incompatible external device APIs to conform to the system's standard `IAudioOutputDevice` interface.
+  * **Factory Method**: The `DeviceFactory` class abstracts the instantiation logic for creating audio device objects.
+
+-----
 
 ## **Project Structure**
 
-
 The project is organized into a modular structure to separate concerns and improve clarity.
 
-<p align="center">
-  <img src="UML.svg" alt="RhythmBox UML Diagram" width="850"/>
-  <br/>
-  <em>Diagram showing RhythmBox interaction in C++ </em>
-</p>
-
+<!-- \<p align="center"\>
+\<img src="UML.svg" alt="RhythmBox UML Diagram" width="850"/\>
+<br>
+\<em\>Diagram showing RhythmBox interaction in C++ \</em\>
+\</p\> -->
 
 ```
 MusicPlayerApplication/
 │
-├── main.cpp                      # Composition root and application entry point
-├── MusicPlayerFacade.hpp         # Facade class that orchestrates application features
+├── main.cpp                      # Composition root and interactive CLI
+├── MusicPlayerFacade.hpp         # Facade class that orchestrates features
 ├── MusicPlayerApplication.hpp    # High-level singleton class to run the application
 │
 ├── core/
-│   └── AudioEngine.hpp           # Handles core playback logic (play, pause)
+│   └── AudioEngine.hpp           # Handles core playback logic
 │
 ├── enums/
 │   ├── DeviceType.hpp            # Enum for audio output device types
@@ -63,116 +68,125 @@ MusicPlayerApplication/
 │   └── Playlist.hpp              # Data model for a playlist
 │
 ├── managers/
-│   ├── PlaylistManager.hpp       # Manages playlist creation, deletion, and modification
-│   ├── DeviceManager.hpp         # Manages the currently connected audio device
-│   └── StrategyManager.hpp       # Manages the available playback strategies
+│   ├── PlaylistManager.hpp       # Manages playlists
+│   ├── DeviceManager.hpp         # Manages the connected audio device
+│   └── StrategyManager.hpp       # Manages playback strategies
 │
 ├── strategies/
-│   ├── PlayStrategy.hpp          # Abstract base class for all playback strategies
+│   ├── PlayStrategy.hpp          # Abstract base class for playback strategies
 │   ├── SequentialPlayStrategy.hpp# Concrete strategy for sequential playback
-│   ├── RandomPlayStrategy.hpp    # Concrete strategy for random playback
-│   └── CustomQueueStrategy.hpp   # Concrete strategy for queued playback
+│   └── RandomPlayStrategy.hpp    # Concrete strategy for random playback
 │
 ├── device/
 │   ├── IAudioOutputDevice.hpp    # Interface for all audio output devices
-│   ├── BluetoothSpeakerAdapter.hpp # Adapter for the Bluetooth API
-│   ├── WiredSpeakerAdapter.hpp   # Adapter for the Wired Speaker API
-│   └── HeadphonesAdapter.hpp     # Adapter for the Headphones API
+│   ├── BluetoothSpeakerAdapter.hpp
+│   ├── WiredSpeakerAdapter.hpp
+│   └── HeadphonesAdapter.hpp
 │
 ├── external/
-│   ├── BluetoothSpeakerAPI.hpp   # Mock external API for a Bluetooth speaker
-│   ├── HeadphonesAPI.hpp         # Mock external API for headphones
-│   └── WiredSpeakerAPI.hpp       # Mock external API for a wired speaker
+│   ├── BluetoothSpeakerAPI.hpp   # Mock external APIs for devices
+│   ├── HeadphonesAPI.hpp
+│   └── WiredSpeakerAPI.hpp
 │
 └── factories/
     └── DeviceFactory.hpp         # Factory for creating audio device instances
 ```
 
-## **How to Build and Run**
+-----
 
-1.  **Prerequisites**: You need a C++ compiler (like g++).
-2.  **Compilation**: Since all implementation is in header files and `main.cpp`, you can compile the project with a single command from the root directory:
+## **Getting Started**
+
+### **Prerequisites**
+
+  * A C++11 compatible compiler (like g++).
+
+### **Build & Run Instructions**
+
+1.  **Navigate to the Source Directory**:
+    Open your terminal and navigate to the application's main folder.
+
+    ```sh
+    cd "RhythmBox/C++ Code/MusicPlayerSystem/MusicPlayerApplication"
+    ```
+
+2.  **Compile the Application**:
+    Use the following command to compile the source code into an executable file named `RhythmBox`.
+
     ```sh
     g++ -std=c++11 -o RhythmBox main.cpp
     ```
-3.  **Execution**: Run the compiled executable:
+
+3.  **Run the Program**:
+    Execute the compiled program to start the interactive session.
+
     ```sh
     ./RhythmBox
     ```
 
-## **Usage Example**
+-----
 
-The `main.cpp` file provides a clear demonstration of the application's functionality.
+## **Interactive Session Walkthrough**
 
-```cpp
+Here’s a quick example of how you can use RhythmBox:
 
-#include "MusicPlayerApplication.hpp"
-#include <iostream>
+```text
+Initial song library populated with 5 songs.
 
-using namespace std;
+===== RhythmBox Music Player =====
+1.  Create Song in Library
+2.  Create Playlist
+...
+==================================
+Enter your choice: 2
+Enter new playlist name: Road Trip Mix
 
-void runApplication() {
-    auto application = MusicPlayerApplication::getInstance();
+Playlist "Road Trip Mix" created.
 
-    // 1. Populate the song library
-    application->createSongInLibrary("Kesariya", "Arijit Singh", "/music/kesariya.mp3");
-    application->createSongInLibrary("Zinda", "Siddharth Mahadevan", "/music/zinda.mp3");
+===== RhythmBox Music Player =====
+...
+Enter your choice: 3
+Enter playlist name: Road Trip Mix
+Enter song title to add: Zinda
 
-    // 2. Create a playlist and add songs
-    application->createPlaylist("Bollywood Vibes");
-    application->addSongToPlaylist("Bollywood Vibes", "Kesariya");
+Song added to playlist successfully.
 
-    // 3. Connect a device and play a single song
-    cout << "\n-- Playing a single song --\n";
-    application->connectAudioDevice(DeviceType::HEADPHONES);
-    application->playSingleSong("Zinda");
+===== RhythmBox Music Player =====
+...
+Enter your choice: 6
+Select a device (1: Headphones, 2: Bluetooth, 3: Wired): 2
 
-    // 4. Select a strategy and play a playlist
-    cout << "\n-- Sequential Playback --\n";
-    application->selectPlayStrategy(PlayStrategyType::SEQUENTIAL);
-    application->loadPlaylist("Bollywood Vibes");
-    application->playAllTracksInPlaylist();
+Bluetooth device connected
 
-    // 5. Remove a song and demonstrate the change
-    cout << "\n-- Deleting a song from a playlist --\n";
-    application->removeSongFromPlaylist("Bollywood Vibes", "Kesariya");
-    application->playAllTracksInPlaylist(); // Playlist is now empty
+===== RhythmBox Music Player =====
+...
+Enter your choice: 8
+Enter playlist name to play: Road Trip Mix
 
-    // 6. Delete the playlist
-    cout << "\n-- Deleting a playlist --\n";
-    application->deletePlaylist("Bollywood Vibes");
-}
-
-int main() {
-    try {
-        runApplication();
-    } catch (const exception& error) {
-        cerr << "An unexpected error occurred: " << error.what() << endl;
-    }
-
-    // 7. Clean up all resources
-    MusicPlayerApplication::getInstance()->cleanup();
-    cout << "\nApplication finished and all resources cleaned up." << endl;
-
-    return 0;
-}
-
+-- Playing all tracks in 'Road Trip Mix' --
+Playing song: Zinda
+[BluetoothSpeaker] Playing: Zinda by Siddharth Mahadevan
+Completed playlist: Road Trip Mix
 ```
 
-## Technologies Used
+-----
 
-- C++11
-- OOP and SOLID Principles
-- Design Patterns (Strategy, Singleton, Facade, Adapter, Factory)
-- Command-Line Interface (CLI)
+## **Technologies Used**
 
-## Future Improvements
+  * C++11
+  * OOP and SOLID Principles
+  * Design Patterns (Strategy, Singleton, Facade, Adapter, Factory)
+  * Command-Line Interface (CLI)
 
-- Add support for persistent storage using files or databases
-- Implement real-time playback with audio libraries
-- GUI version using Qt or ImGui
+-----
 
-## License
+## **Future Improvements**
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+  * Add support for persistent storage using files or a database.
+  * Implement real-time playback with actual audio libraries.
+  * Develop a GUI version using a framework like Qt or ImGui.
 
+-----
+
+## **License**
+
+This project is licensed under the MIT License - see the [LICENSE](https://www.google.com/search?q=LICENSE) file for details.

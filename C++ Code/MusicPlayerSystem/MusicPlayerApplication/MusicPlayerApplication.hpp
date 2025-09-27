@@ -20,26 +20,19 @@ public:
         return instance;
     }
 
-    // Cleanup method to prevent memory leaks
     void cleanup() {
-        // Delete all songs in the library
         for (Song* song : songLibrary) {
             delete song;
         }
         songLibrary.clear();
-
-        // Cleanup all singleton managers
         PlaylistManager::getInstance()->cleanup();
         DeviceManager::getInstance()->cleanup();
         StrategyManager::getInstance()->cleanup();
-        
-        // ADDED: Cleanup for MusicPlayerFacade
         MusicPlayerFacade::getInstance()->cleanup();
     }
 
-    void createSongInLibrary(const string& title, const string& artist,
-                                const string& path) {
-        Song* newSong = new Song(title, artist, path);
+    void createSongInLibrary(const string& title, const string& artist) {
+        Song* newSong = new Song(title, artist);
         songLibrary.push_back(newSong);
     }
 
@@ -55,7 +48,6 @@ public:
         PlaylistManager::getInstance()->createPlaylist(playlistName);
     }
 
-    // High-level function to delete a playlist
     void deletePlaylist(const string& playlistName) {
         PlaylistManager::getInstance()->deletePlaylist(playlistName);
     }
@@ -70,7 +62,6 @@ public:
             ->addSongToPlaylist(playlistName, song);
     }
 
-    // High-level function to remove a song from a playlist
     void removeSongFromPlaylist(const string& playlistName, const string& songTitle) {
         Song* song = findSongByTitle(songTitle);
         if (!song) {
@@ -87,6 +78,8 @@ public:
         MusicPlayerFacade::getInstance()->setPlayStrategy(strategyType);
     }
 
+
+
     void loadPlaylist(const string& playlistName) {
         MusicPlayerFacade::getInstance()->loadPlaylist(playlistName);
     }
@@ -99,28 +92,12 @@ public:
         MusicPlayerFacade::getInstance()->playSong(song);
     }
 
-    void pauseCurrentSong(const string& songTitle) {
-        Song* song = findSongByTitle(songTitle);
-        if (!song) {
-            throw runtime_error("Song \"" + songTitle + "\" not found.");
-        }
-        MusicPlayerFacade::getInstance()->pauseSong(song);
-    }
-
     void playAllTracksInPlaylist() {
         MusicPlayerFacade::getInstance()->playAllTracks();
     }
 
     void playPreviousTrackInPlaylist() {
         MusicPlayerFacade::getInstance()->playPreviousTrack();
-    }
-
-    void queueSongNext(const string& songTitle) {
-        Song* song = findSongByTitle(songTitle);
-        if (!song) {
-            throw runtime_error("Song \"" + songTitle + "\" not found.");
-        }
-        MusicPlayerFacade::getInstance()->enqueueNext(song);
     }
 };
 

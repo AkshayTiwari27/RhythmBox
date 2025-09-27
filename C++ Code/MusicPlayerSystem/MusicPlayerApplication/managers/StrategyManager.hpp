@@ -1,7 +1,6 @@
 #pragma once
 #include<iostream>
 #include "../strategies/SequentialPlayStrategy.hpp"
-#include "../strategies/CustomQueueStrategy.hpp"
 #include "../strategies/RandomPlayStrategy.hpp"
 #include "../enums/PlayStrategyType.hpp"
 
@@ -12,12 +11,10 @@ private:
     static StrategyManager* instance;
     SequentialPlayStrategy* sequentialStrategy;
     RandomPlayStrategy* randomStrategy;
-    CustomQueueStrategy* customQueueStrategy;
 
     StrategyManager() {
         sequentialStrategy = new SequentialPlayStrategy();
         randomStrategy = new RandomPlayStrategy();
-        customQueueStrategy = new CustomQueueStrategy();
     }
 public:
     static StrategyManager* getInstance() {
@@ -27,20 +24,16 @@ public:
         return instance;
     }
     
-    // ADDED: Cleanup method to prevent memory leaks
     void cleanup() {
         delete sequentialStrategy;
         delete randomStrategy;
-        delete customQueueStrategy;
     }
 
     PlayStrategy* getStrategy(PlayStrategyType type) {
         if (type == PlayStrategyType::SEQUENTIAL) {
             return sequentialStrategy;
-        } else if (type == PlayStrategyType::RANDOM) {
+        } else { // RANDOM
             return randomStrategy;
-        } else {
-            return customQueueStrategy;
         }
     }
 };

@@ -2,6 +2,5 @@
 
 enum class PlayStrategyType { 
     SEQUENTIAL, 
-    RANDOM, 
-    CUSTOM_QUEUE 
+    RANDOM
 };
